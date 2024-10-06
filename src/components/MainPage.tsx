@@ -3,12 +3,14 @@ import { Stack, Button, Form, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactSelect from "react-select";
 import NoteCard from "./Form/NoteCard";
+import { Tag } from "../types";
 
 type MainProps = {
+  notes: Note;
   availableTags: Tag[];
 };
 
-const MainPage = ({ availableTags }) => {
+const MainPage = ({ availableTags, notes }) => {
   return (
     <div className="container">
       <Stack direction="horizontal" className="justify-content-between">
@@ -36,18 +38,11 @@ const MainPage = ({ availableTags }) => {
       </Form>
       {/* Notlar */}
       <Row xs={1} sm={20} lg={3} xl={4} className="g-3 mt-4">
-        <Col>
-          <NoteCard />
-        </Col>
-        <Col>
-          <NoteCard />
-        </Col>
-        <Col>
-          <NoteCard />
-        </Col>
-        <Col>
-          <NoteCard />
-        </Col>
+        {notes.map((note) => (
+          <Col key={note.id}>
+            <NoteCard note={note} />
+          </Col>
+        ))}
       </Row>
     </div>
   );

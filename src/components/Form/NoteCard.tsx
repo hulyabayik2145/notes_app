@@ -1,12 +1,20 @@
 import React from "react";
 import { Card, Stack, Badge } from "react-bootstrap";
+import { Note } from "../../types";
+import { useNavigate } from "react-router-dom";
 
-const NoteCard = () => {
+type CardType = {
+  note: Note;
+};
+
+const NoteCard = ({ note }: CardType) => {
+  const navigate = useNavigate();
+  console.log(note);
   return (
-    <Card>
+    <Card onClick={() => navigate(`/${note.id}`)}>
       <Card.Body>
         <Stack className="justify-content-center align-items-center">
-          <span>title</span>
+          <span>{note.title}</span>
           <Stack
             className="justify-content-center gap-1"
             direction="horizontal"

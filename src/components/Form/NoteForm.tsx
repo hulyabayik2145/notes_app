@@ -5,11 +5,17 @@ import { CreateNoteProps } from "./CreateNote";
 import { Tag } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
-const NoteForm = ({ createTag, availableTags, onSubmit }: CreateNoteProps) => {
+const NoteForm = ({
+  createTag,
+  availableTags,
+  onSubmit,
+  tags = [],
+  title = "",
+}: CreateNoteProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markDownRef = useRef<HTMLTextAreaElement>(null);
   const navigate = useNavigate();
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +24,7 @@ const NoteForm = ({ createTag, availableTags, onSubmit }: CreateNoteProps) => {
       markdown: markDownRef.current!.value,
       tags: selectedTags,
     });
-    // navigate(-1);
+    navigate(-1);
   };
   return (
     <Form onSubmit={handleSubmit}>
@@ -34,13 +40,25 @@ const NoteForm = ({ createTag, availableTags, onSubmit }: CreateNoteProps) => {
             <Form.Group controlId="title">
               <Form.Label>Etiketler</Form.Label>
               <ReactSelect
-                value={selectedTags?.map((tag) => ({
+                value={selectedTags.map((tag) => ({
                   label: tag.label,
                   value: tag.id,
                 }))}
+                onChange={(note_tags) =>
+                  setSelectedTags(
+                    note_tags.map((tag) => ({
+                      label: tag.label,
+                      id: tag.value,
+                    }))
+                  )
+                }
+                // yeni etket oluşturulduğunda locale kaydet
                 onCreateOption={(label) => {
+                  // yeni obje tanımla
                   const newTag: Tag = { id: uuidv4(), label };
+                  //locale kaydet
                   createTag(newTag);
+                  //state i güncelle
                   setSelectedTags([...selectedTags, newTag]);
                 }}
                 //daha önceden oluşturulan tagları listele
@@ -48,6 +66,7 @@ const NoteForm = ({ createTag, availableTags, onSubmit }: CreateNoteProps) => {
                   label: item.label,
                   value: item.id,
                 }))}
+                isMulti
                 className="shadow"
               />
             </Form.Group>
