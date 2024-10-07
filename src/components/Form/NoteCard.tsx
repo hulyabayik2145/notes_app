@@ -1,5 +1,4 @@
-import React from "react";
-import { Card, Stack, Badge } from "react-bootstrap";
+import { Badge, Card, Stack } from "react-bootstrap";
 import { Note } from "../../types";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +8,7 @@ type CardType = {
 
 const NoteCard = ({ note }: CardType) => {
   const navigate = useNavigate();
-  console.log(note);
+
   return (
     <Card onClick={() => navigate(`/${note.id}`)}>
       <Card.Body>
@@ -19,9 +18,9 @@ const NoteCard = ({ note }: CardType) => {
             className="justify-content-center gap-1"
             direction="horizontal"
           >
-            <Badge>label</Badge>
-            <Badge>label</Badge>
-            <Badge>label</Badge>
+            {note.tags?.map((tag) => (
+              <Badge key={tag.id}>{tag.label}</Badge>
+            ))}
           </Stack>
         </Stack>
       </Card.Body>

@@ -9,13 +9,15 @@ const NoteForm = ({
   createTag,
   availableTags,
   onSubmit,
+  markdown = "",
   tags = [],
   title = "",
 }: CreateNoteProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markDownRef = useRef<HTMLTextAreaElement>(null);
-  const navigate = useNavigate();
   const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
+
+  const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +35,12 @@ const NoteForm = ({
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Başlık</Form.Label>
-              <Form.Control ref={titleRef} required className="shadow" />
+              <Form.Control
+                defaultValue={title}
+                ref={titleRef}
+                required
+                className="shadow"
+              />
             </Form.Group>
           </Col>
           <Col>
@@ -78,6 +85,7 @@ const NoteForm = ({
             as={"textarea"}
             className="shadow"
             ref={markDownRef}
+            defaultValue={markdown}
             required
             style={{ minHeight: "300px" }}
           />

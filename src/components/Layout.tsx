@@ -9,8 +9,6 @@ const Layout = ({ notes }) => {
 
   const { id } = useParams();
 
-  console.log(id);
-
   const found = notes.find((n) => n.id === id);
 
   if (!found) return <Navigate to={"/"} />;

@@ -4,9 +4,17 @@ import { NoteData, Tag } from "../../types";
 
 export type CreateNoteProps = {
   createTag: (tag: Tag) => void;
+
   availableTags: Tag[];
   onSubmit: (data: NoteData) => void;
-};
+} & Partial<NoteData>;
+
+/*
+  partial sayesinde şunu yapmış olduk
+  farklı bir typeın bütün değerlerini bu 
+  "createnoteprops" typena aktardık.Aynı zamanda
+  hepsi ? ile tanımlanmış gibi bazı durumlarda undefined olabilir.
+*/
 
 const CreateNote = ({
   createTag,

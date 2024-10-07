@@ -1,7 +1,6 @@
 export type Note = {
   id: string;
-};
-
+} & NoteData;
 export type NoteData = {
   title: string;
   markdown: string;
@@ -12,7 +11,6 @@ export type Tag = {
   id: string;
   label: string;
 };
-
 export type RawNote = {
   id: string;
 } & RawNoteData;
@@ -20,5 +18,5 @@ export type RawNote = {
 export type RawNoteData = {
   title: string;
   markdown: string;
-  tagId: string[];
+  tagIds: string[];
 };

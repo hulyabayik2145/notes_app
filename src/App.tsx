@@ -6,10 +6,28 @@ import { useLocaleStorage } from "./useLocaleStorage";
 import { v4 as uuidv4 } from "uuid";
 import Layout from "./components/Layout";
 import NoteDetail from "./components/NoteDetail";
+import { useMemo } from "react";
+import EditNote from "./components/Form/EditNote";
 
 function App() {
   const [notes, setNotes] = useLocaleStorage<RawNote[]>("notes", []);
   const [tags, setTags] = useLocaleStorage<Tag[]>("tags", []);
+
+  /*
+   * Localden aldığımız notlarda etiket ismi yerine id geliyor.
+   * Bizim yapacağımız idlerin herbirine karşılık gelen etiketleri bulacağız ve
+   * objeye ekleriz.
+   */
+
+  const noteWithTags = useMemo(
+    () =>
+      notes.map((note) => ({
+        ...note,
+        tags: tags.filter((tag) => note.tagIds.includes(tag.id)),
+      })),
+
+    [notes, tags]
+  );
 
   const addNote = ({ tags, ...data }: NoteData) => {
     setNotes((prev) => {
@@ -24,16 +42,35 @@ function App() {
       ];
     });
   };
-  console.log(notes);
+
   const createTag = (tag: Tag) => {
     setTags((prev) => [...prev, tag]);
+  };
+
+  const deleteNote = (id: string) => {
+    setNotes((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const updateNote = (id: string, { tags, ...data }: NoteData) => {
+    /*
+      1.adım:notu alacağız
+      2.adım:notu statede tuttuğumuz dizideki halini bulacağız
+      3.adım:Dizideki eski versiyonunu kaldıracağız
+      4.adım:Yerine yeni aldığımız yeni notu koyacağız
+    */
+    const updated = notes.map((note) =>
+      note.id === id
+        ? { ...note, ...data, tagIds: tags.map((tag) => tag.id) }
+        : note
+    );
+    setNotes(updated);
   };
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<MainPage availableTags={tags} notes={notes} />}
+          element={<MainPage availableTags={tags} notes={noteWithTags} />}
         />
         <Route
           path="/new"
@@ -45,8 +82,18 @@ function App() {
             />
           }
         />
-        <Route path="/:id" element={<Layout notes={notes} />}>
-          <Route index element={<NoteDetail />} />
+        <Route path="/:id" element={<Layout notes={noteWithTags} />}>
+          <Route index element={<NoteDetail deleteNote={deleteNote} />} />
+          <Route
+            path="edit"
+            element={
+              <EditNote
+                availableTags={tags}
+                createTag={createTag}
+                onSubmit={updateNote}
+              />
+            }
+          />
         </Route>
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
