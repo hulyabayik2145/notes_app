@@ -6,3 +6,7 @@
 - react-select
 - uuid
 - react-router-dom
+
+## Ekran Gif
+
+![](notesapp.gif)
